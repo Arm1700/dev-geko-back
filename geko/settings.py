@@ -43,10 +43,22 @@ INSTALLED_APPS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'https://22ef-37-252-90-146.ngrok-free.app',
+    'https://gekoeducation.com',
+    'https://www.gekoeducation.com'
 ]
-CSRF_TRUSTED_ORIGINS = ['https://22ef-37-252-90-146.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://gekoeducation.com',
+    'https://www.gekoeducation.com'
+]
 
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
