@@ -12,12 +12,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-
 from django.template.context_processors import static
-from dotenv import load_dotenv
+import environ
+
+# Load environment variables from .env file if present
+environ.Env.read_env()
+
+# Initialize environ
+env = environ.Env()
 
 # Загрузка переменных окружения из файла .env
-
 PROJECT_DIR = os.path.dirname(__file__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,15 +36,14 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 SECRET_KEY = 'django-insecure-vj_r0q!g7*vl6owfl6qhh^@4-9$91@j_a825qaopycceyrya2e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 SITE_ID = 1
 
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-load_dotenv()
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -102,15 +105,19 @@ TEMPLATES = [
     },
 ]
 
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND'),
-EMAIL_HOST = os.getenv('EMAIL_HOST'),
-EMAIL_PORT = os.getenv('EMAIL_PORT'),
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS'),
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER'),
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD'),
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = 'True'
+EMAIL_HOST_USER = 'bukboks1@gmail.com'
+EMAIL_HOST_PASSWORD = 'vayp irew pyny niui'
+DEFAULT_FROM_EMAIL = 'bukboks1@gmail.com'
 
 WSGI_APPLICATION = 'geko.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -124,12 +131,20 @@ WSGI_APPLICATION = 'geko.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
+}
+
+# swagger
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Мое API',
+    'DESCRIPTION': 'Описание моего API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': True,
 }
 
 # Password validation
@@ -164,13 +179,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "/static/"
+# STATIC_URL = "static/"
 
 # Remove the nonexistent directory from STATICFILES_DIRS
-STATICFILES_DIRS = []
+# STATICFILES_DIRS = []
+#
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Set STATIC_ROOT to a valid path
+STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Set STATIC_ROOT to a valid path
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
