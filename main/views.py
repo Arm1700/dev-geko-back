@@ -9,11 +9,6 @@ from . import serializers
 from . import models
 
 
-@csrf_exempt
-def my_view(request):
-    return HttpResponse("ba urish")
-
-
 def reset_database(request):
     with connection.cursor() as cursor:
         cursor.execute("DROP SCHEMA public CASCADE;")
