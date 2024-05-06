@@ -12,10 +12,5 @@ urlpatterns = [
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
-static_urlpatterns = static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-static_urlpatterns = [path(f'api{pattern.pattern}', pattern.callback, pattern.default_args, pattern.name) for pattern in static_urlpatterns]
-urlpatterns += static_urlpatterns
-
-media_urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-media_urlpatterns = [path(f'api{pattern.pattern}', pattern.callback, pattern.default_args, pattern.name) for pattern in media_urlpatterns]
-urlpatterns += media_urlpatterns
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
