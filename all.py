@@ -6,10 +6,10 @@ import django
 
 def main():
     # Path to the virtual environment
-    venv_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'project', 'backend', 'venv')
+    venv_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'project', 'backend','geko-back', 'venv')
 
     # Path to manage.py
-    project_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'project', 'backend', 'geko')
+    project_path = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'project', 'backend', 'geko-back')
     manage_path = os.path.join(project_path, "manage.py")
 
     # Set DJANGO_SETTINGS_MODULE environment variable

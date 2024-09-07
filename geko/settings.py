@@ -60,12 +60,14 @@ INSTALLED_APPS = [
 
 CORS_ALLOWED_ORIGINS = [
     'https://gekoeducation.com',
-    'https://www.gekoeducation.com'
+    'http://127.0.0.1:8000',
+    'https://www.gekoeducation.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://gekoeducation.com',
-    'https://www.gekoeducation.com'
+    'http://127.0.0.1:8000',
+    'https://www.gekoeducation.com',
 ]
 
 CORS_ALLOW_METHODS = [
@@ -87,6 +89,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'geko.urls'
 
@@ -169,14 +173,26 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-US'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
 
+LANGUAGES = [
+    ('en-US','English'),
+    ('am','Armenian'),
+    ('ru', 'Russian')
+]
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'main/locale'),
+]
+
+GOOGLE_TRANSLATE_API_KEY = 'evident-torus-434710-s9'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -203,4 +219,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
