@@ -62,12 +62,14 @@ CORS_ALLOWED_ORIGINS = [
     'https://gekoeducation.com',
     'http://127.0.0.1:8000',
     'https://www.gekoeducation.com',
+    'https://dev.gekoeducation.com',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://gekoeducation.com',
     'http://127.0.0.1:8000',
     'https://www.gekoeducation.com',
+    'https://dev.gekoeducation.com',
 ]
 
 CORS_ALLOW_METHODS = [
