@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Language(models.Model):
     code = models.CharField(max_length=10, unique=True)  # Код языка, например: en, ru
     name = models.CharField(max_length=50)  # Название языка, например: English, Russian
@@ -12,25 +13,11 @@ class Category(models.Model):
     image = models.URLField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return self.get_translation('en')  # Используем метод для получения перевода
+        return self.get_translation('en')
 
     def get_translation(self, language_code):
-        translations = self.translations.filter(language__code=language_code)
-        if translations.exists():
-            return translations.first().text
-        return "No translation"
-
-
-class CategoryTranslation(models.Model):
-    category = models.ForeignKey(Category, related_name='translations', on_delete=models.CASCADE)
-    language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    text = models.CharField(max_length=255)
-
-    class Meta:
-        unique_together = ('category', 'language')
-
-    def __str__(self):
-        return f'{self.language.code}: {self.text}'
+        translation = self.translations.filter(language__code=language_code).first()
+        return translation.text if translation else "No translation available"
 
 
 class PopularCourse(models.Model):
@@ -41,31 +28,13 @@ class PopularCourse(models.Model):
     duration = models.CharField(max_length=50)
     students = models.IntegerField()
     price = models.CharField(max_length=50)
+
     def __str__(self):
         return self.get_translation('en')
 
     def get_translation(self, language_code):
-        translations = self.translations.filter(language__code=language_code)
-        if translations.exists():
-            return translations.first().title
-        return "No translation"
-
-
-class PopularCourseTranslation(models.Model):
-    popular_course = models.ForeignKey(PopularCourse, related_name='translations', on_delete=models.CASCADE)
-    language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    skill_level = models.CharField(max_length=50)
-    assessments = models.CharField(max_length=50)
-    lang = models.CharField(max_length=50)
-    desc = models.TextField()
-    certification = models.TextField()
-
-    class Meta:
-        unique_together = ('popular_course', 'language')
-
-    def __str__(self):
-        return f'{self.language.code}: {self.title}'
+        translation = self.translations.filter(language__code=language_code).first()
+        return translation.title if translation else "No translation available"
 
 
 class Event(models.Model):
@@ -102,6 +71,54 @@ class Event(models.Model):
     def available_slots(self):
         return self.total_slots - self.booked_slots
 
+    def __str__(self):
+        return self.get_translation('en')
+
+    def get_translation(self, language_code):
+        translation = self.translations.filter(language__code=language_code).first()
+        return translation.title if translation else "No translation available"
+
+
+class Review(models.Model):
+    image = models.URLField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    def get_translation(self, language_code):
+        translation = self.translations.filter(language__code=language_code).first()
+        return translation.comment if translation else "No translation available"
+
+
+class CategoryTranslation(models.Model):
+    category = models.ForeignKey(Category, related_name='translations', on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    text = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('category', 'language')
+
+    def __str__(self):
+        return f'{self.language.code}: {self.text}'
+
+
+class PopularCourseTranslation(models.Model):
+    popular_course = models.ForeignKey(PopularCourse, related_name='translations', on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    skill_level = models.CharField(max_length=50)
+    assessments = models.CharField(max_length=50)
+    lang = models.CharField(max_length=50)
+    desc = models.TextField()
+    certification = models.TextField()
+
+    class Meta:
+        unique_together = ('popular_course', 'language')
+
+    def __str__(self):
+        return f'{self.language.code}: {self.title}'
+
 
 class EventTranslation(models.Model):
     place = models.CharField(max_length=255)
@@ -116,13 +133,6 @@ class EventTranslation(models.Model):
     def __str__(self):
         return f'{self.language.code}: {self.title}'
 
-
-class Review(models.Model):
-    image = models.URLField(max_length=255, blank=True, null=True)
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
 
 class ReviewTranslation(models.Model):
     review = models.ForeignKey(Review, related_name='translations', on_delete=models.CASCADE)

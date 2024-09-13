@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Language, Category, Review, Event,  PopularCourse, CategoryTranslation, PopularCourseTranslation, ReviewTranslation
+from .models import Language, Category, Review, Event, PopularCourse, CategoryTranslation, PopularCourseTranslation, \
+    ReviewTranslation, EventTranslation
+
 
 class ContactFormSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100)
@@ -21,6 +23,30 @@ class CategoryTranslationSerializer(serializers.ModelSerializer):
         fields = ('language', 'text')
 
 
+class PopularCourseTranslationSerializer(serializers.ModelSerializer):
+    language = LanguageSerializer()
+
+    class Meta:
+        model = PopularCourseTranslation
+        fields = ('language', 'lang', 'title', 'skill_level', 'assessments', 'desc', 'certification')
+
+
+class EventTranslationSerializer(serializers.ModelSerializer):
+    language = LanguageSerializer()
+
+    class Meta:
+        model = EventTranslation
+        fields = ('language', 'title', 'description', 'place')
+
+
+class ReviewTranslationSerializer(serializers.ModelSerializer):
+    language = LanguageSerializer()
+
+    class Meta:
+        model = ReviewTranslation
+        fields = ['language', 'comment']
+
+
 class CategorySerializer(serializers.ModelSerializer):
     translations = CategoryTranslationSerializer(many=True)
 
@@ -28,61 +54,59 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'image', 'translations')
 
-    # Метод для получения перевода на конкретный язык
     def to_representation(self, instance):
-        language_code = self.context.get('language_code', None)  # Получаем код языка из контекста
+        language_code = self.context.get('language_code', None)
         representation = super().to_representation(instance)
 
         if language_code:
-            # Если указан язык, возвращаем только нужный перевод
             translation = next((t for t in representation['translations'] if t['language']['code'] == language_code),
                                None)
             representation['translation'] = translation
-            representation.pop('translations')  # Удаляем все переводы, оставляем только один
+            representation.pop('translations')
         return representation
-
-
-class PopularCourseTranslationSerializer(serializers.ModelSerializer):
-    language = LanguageSerializer()
-
-    class Meta:
-        model = PopularCourseTranslation
-        fields = ('language', 'lang' ,'title', 'skill_level',  'assessments', 'desc','certification')
 
 
 class PopularCourseSerializer(serializers.ModelSerializer):
     translations = PopularCourseTranslationSerializer(many=True)
-    category = CategorySerializer()  # Подключаем сериализатор для категорий
+    category = CategorySerializer()
 
     class Meta:
         model = PopularCourse
-        fields = ('id', 'category', 'image', 'lectures', 'quizzes', 'duration', 'students','price', 'translations')
+        fields = ('id', 'category', 'image', 'lectures', 'quizzes', 'duration', 'students', 'price', 'translations')
 
-    # Метод для возвращения перевода на нужном языке
     def to_representation(self, instance):
-        language_code = self.context.get('language_code', None)  # Получаем код языка из контекста
+        language_code = self.context.get('language_code', None)
         representation = super().to_representation(instance)
 
         if language_code:
-            # Если указан язык, возвращаем только нужный перевод
             translation = next((t for t in representation['translations'] if t['language']['code'] == language_code),
                                None)
             representation['translation'] = translation
-            representation.pop('translations')  # Удаляем все переводы, оставляем только один
+            representation.pop('translations')
         return representation
 
 
 class EventSerializer(serializers.ModelSerializer):
+    translations = EventTranslationSerializer(many=True)
     available_slots = serializers.ReadOnlyField()
 
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = (
+        'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots', 'cost', 'available_slots',
+        'translations')
 
-class ReviewTranslationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ReviewTranslation
-        fields = ['language', 'comment']
+    def to_representation(self, instance):
+        language_code = self.context.get('language_code', None)
+        representation = super().to_representation(instance)
+
+        if language_code:
+            translation = next((t for t in representation['translations'] if t['language']['code'] == language_code),
+                               None)
+            representation['translation'] = translation
+            representation.pop('translations')
+        return representation
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     translations = ReviewTranslationSerializer(many=True)
@@ -90,3 +114,14 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'image', 'name', 'translations']
+
+    def to_representation(self, instance):
+        language_code = self.context.get('language_code', None)
+        representation = super().to_representation(instance)
+
+        if language_code:
+            translation = next((t for t in representation['translations'] if t['language']['code'] == language_code),
+                               None)
+            representation['translation'] = translation
+            representation.pop('translations')
+        return representation
