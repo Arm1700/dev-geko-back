@@ -35,7 +35,7 @@
   "Inter_level_education": "Միջ-մակարդակի կրթություն",
   "happening": "տեղի ունեցող",
   "upcoming": "առաջիկայում",
-  "expired": "հին",
+  "completed": "հին",
   "The_best_time_for": "Լավագույն ժամանակը ",
   "education": "Սովորելու այսօր է…",
   "Limitless_learning_more_possibilities": "Անսահմանափակ ուսուցում, ավելի շատ հնարավորություններ",
@@ -542,16 +542,6 @@
       "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the",
       "image": ["https://eduma.thimpress.com/wp-content/uploads/2015/11/event-1-450x233.jpg"],
       "status": "upcoming",
-      "outcomed": [
-        "Over 37 lectures and 55.5 hours of content!",
-        "LIVE PROJECT End to End Software Testing Training Included.",
-        "Learn Software Testing and Automation basics from a professional trainer from your own desk.",
-        "Information packed practical training starting from basics to advanced testing techniques.",
-        "Best suitable for beginners to advanced level users and who learn faster when demonstrated.",
-        "Course content designed by considering current software testing technology and the job market.",
-        "Practical assignments at the end of every session.",
-        "Practical learning experience with live project work and examples."
-      ],
       "totalSlots": 110,
       "bookedSlots": 5,
       "cost": 0
@@ -565,17 +555,7 @@
       "place": "Birmingham,UK",
       "description": "Մեր սիրելի աշակերտները՝ «Բեմական խոսք և դերասանի վարպետություն» դասընթացի շրջանակում, հնարավորություն ունեցան մասնակցելու Նազենի Հովհաննիսյանի մատուցմամբ վարպետության դասին։",
       "image": ["https://eduma.thimpress.com/wp-content/uploads/2015/11/event-7-450x233.jpg","https://eduma.thimpress.com/wp-content/uploads/2015/11/event-7-450x233.jpg","https://eduma.thimpress.com/wp-content/uploads/2015/11/event-7-450x233.jpg","https://eduma.thimpress.com/wp-content/uploads/2015/12/event-3-450x233.jpg"],
-      "status": "expired",
-      "outcomed": [
-        "Over 37 lectures and 55.5 hours of content!",
-        "LIVE PROJECT End to End Software Testing Training Included.",
-        "Learn Software Testing and Automation basics from a professional trainer from your own desk.",
-        "Information packed practical training starting from basics to advanced testing techniques.",
-        "Best suitable for beginners to advanced level users and who learn faster when demonstrated.",
-        "Course content designed by considering current software testing technology and the job market.",
-        "Practical assignments at the end of every session.",
-        "Practical learning experience with live project work and examples."
-      ],
+      "status": "completed",
       "totalSlots": 110,
       "bookedSlots": 5,
       "cost": 0
@@ -586,7 +566,6 @@
         "id": 1,
         "image": "https://eduma.thimpress.com/wp-content/uploads/2015/11/team-1.jpg",
         "name": "Susan Jackson",
-        "developer": "WordPress Developer",
         "desc":"I came to Eduma ten years ago",
         "comment":
             "Wow, I'm truly impressed by your creativity! Your attention to detail and the depth of your analysis are remarkable. It's clear that you've put a lot of thought and effort into this project. Keep up the amazing work!"

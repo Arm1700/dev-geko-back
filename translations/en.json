@@ -35,7 +35,7 @@
   "Inter_level_education": "Inter-level education",
   "happening": "happening",
   "upcoming": "upcoming",
-  "expired": "expired",
+  "completed": "completed",
   "The_best_time_for": "The best time for",
   "education": "education is today",
   "Limitless_learning_more_possibilities": "Limitless learning, more possibilities",
@@ -599,7 +599,7 @@
       "place": "Birmingham,UK",
       "description": "Morbi accumsan ipsum velit. Nam nec tellus a odio tincidunt auctor a ornare odio. Sed non mauris itae erat conuat",
       "image": ["https://eduma.thimpress.com/wp-content/uploads/2015/12/event-3-450x233.jpg"],
-      "status": "expired",
+      "status": "completed",
       "outcomed": [
         "Over 37 lectures and 55.5 hours of content!",
         "LIVE PROJECT End to End Software Testing Training Included.",
