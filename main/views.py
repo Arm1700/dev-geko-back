@@ -31,7 +31,7 @@ class PopularCourseViewSet(viewsets.ModelViewSet):
         # Переопределяем метод для передачи кода языка в контекст сериализатора
         context = super().get_serializer_context()
         context['language_code'] = self.request.query_params.get('language',
-                                                                 'en')  # Получаем код языка из параметров запроса
+                                                                 'en')
         return context
 
 
