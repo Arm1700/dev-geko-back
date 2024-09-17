@@ -11,6 +11,10 @@ class Language(models.Model):
 
 class Category(models.Model):
     image = models.URLField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
 
     def __str__(self):
         return self.get_translation('en')

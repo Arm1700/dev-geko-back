@@ -72,10 +72,12 @@ class CategoryTranslationInline(admin.TabularInline):
 
 class CategoryAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [CategoryTranslationInline]
-    list_display = ('id', 'image')
+    list_display = ('id', 'image', 'order')
+    list_editable = ['order']
     search_fields = ('translations__text', 'image')
     list_filter = ('translations__language',)
     session_key = 'category_translation_language'
+    ordering = ['order']
 
 
 admin.site.register(Category, CategoryAdmin)
