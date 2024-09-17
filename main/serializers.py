@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Language, Category, Review, Event, PopularCourse, CategoryTranslation, PopularCourseTranslation, \
-    ReviewTranslation, EventTranslation
+    ReviewTranslation, EventTranslation, LessonInfoTranslation, LessonInfo
 
 
 class ContactFormSerializer(serializers.Serializer):
@@ -45,6 +45,14 @@ class ReviewTranslationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewTranslation
         fields = ['language', 'comment']
+
+
+class LessonInfoTranslationSerializer(serializers.ModelSerializer):
+    language = LanguageSerializer()
+
+    class Meta:
+        model = LessonInfoTranslation
+        fields = ['language', 'title']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -93,8 +101,8 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-        'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots', 'cost', 'available_slots',
-        'translations')
+            'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots', 'cost', 'available_slots',
+            'translations')
 
     def to_representation(self, instance):
         language_code = self.context.get('language_code', None)
@@ -122,6 +130,26 @@ class ReviewSerializer(serializers.ModelSerializer):
         if language_code:
             translation = next((t for t in representation['translations'] if t['language']['code'] == language_code),
                                None)
+            representation['translation'] = translation
+            representation.pop('translations')
+        return representation
+
+
+class LessonInfoSerializer(serializers.ModelSerializer):
+    translations = LessonInfoTranslationSerializer(many=True, read_only=True)
+    icon = serializers.CharField()
+    class Meta:
+        model = LessonInfo
+        fields = ['id', 'icon', 'count', 'translations']
+
+    def to_representation(self, instance):
+        language_code = self.context.get('language_code', None)
+        representation = super().to_representation(instance)
+
+        if language_code:
+            translation = next(
+                (t for t in representation['translations'] if t['language']['code'] == language_code),
+                None)
             representation['translation'] = translation
             representation.pop('translations')
         return representation

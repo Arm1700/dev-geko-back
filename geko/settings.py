@@ -188,8 +188,8 @@ USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = [
-    ('en','English'),
-    ('am','Armenian'),
+    ('en', 'English'),
+    ('am', 'Armenian'),
     ('ru', 'Russian')
 ]
 LOCALE_PATHS = [
@@ -225,5 +225,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-

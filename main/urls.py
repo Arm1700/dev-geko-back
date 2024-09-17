@@ -7,8 +7,8 @@ from .views import ReviewViewSet
 router = DefaultRouter()
 router.register(r'categories', views.CategoryViewSet, basename='category')
 router.register(r'popular_courses',
- views.PopularCourseViewSet, basename='popularcourse')
-router.register(r'reviews', ReviewViewSet, basename='review')
+                views.PopularCourseViewSet, basename='popularcourse')
+router.register(r'lesson_info', views.LessonInfoViewSet, basename='lessoninfo')
 router.register(r'events', views.EventViewSet, basename='event')
 urlpatterns = [
     path('', include(router.urls)),

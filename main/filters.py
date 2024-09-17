@@ -16,6 +16,7 @@ class SkillLevelFilter(SimpleListFilter):
             return queryset.filter(translations__skill_level=self.value())
         return queryset
 
+
 class ReviewLanguageFilter(SimpleListFilter):
     title = 'Language'
     parameter_name = 'language'

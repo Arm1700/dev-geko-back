@@ -7,28 +7,38 @@ from . import serializers
 
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Event, Category, PopularCourse, Review
-from .serializers import EventSerializer, CategorySerializer, PopularCourseSerializer, ReviewSerializer
+from .models import Event, Category, PopularCourse, Review, LessonInfo
+from .serializers import EventSerializer, CategorySerializer, PopularCourseSerializer, ReviewSerializer, \
+    LessonInfoSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()  # Определяем queryset, который будет использоваться
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
     def get_serializer_context(self):
-        # Переопределяем метод для передачи кода языка в контекст
         context = super().get_serializer_context()
         context['language_code'] = self.request.query_params.get('language',
-                                                                 'en')  # Получаем код языка из параметров запроса
+                                                                 'en')
         return context
 
 
 class PopularCourseViewSet(viewsets.ModelViewSet):
-    queryset = PopularCourse.objects.all()  # Определяем queryset для всех курсов
+    queryset = PopularCourse.objects.all()
     serializer_class = PopularCourseSerializer
 
     def get_serializer_context(self):
-        # Переопределяем метод для передачи кода языка в контекст сериализатора
+        context = super().get_serializer_context()
+        context['language_code'] = self.request.query_params.get('language',
+                                                                 'en')
+        return context
+
+
+class LessonInfoViewSet(viewsets.ModelViewSet):
+    queryset = LessonInfo.objects.all()
+    serializer_class = LessonInfoSerializer
+
+    def get_serializer_context(self):
         context = super().get_serializer_context()
         context['language_code'] = self.request.query_params.get('language',
                                                                  'en')
@@ -81,7 +91,7 @@ class ContactFormView(APIView):
                         'Subject here',
                         f'Name: {name}\nEmail: {email}\nMessage: {message}',
                         'beglaryan4.arman@gmail.com',
-                        ['bukboks1@gmail.com'],
+                        ['gekoeducation@gmail.com'],
                         fail_silently=False
                     )
                 except BadHeaderError:

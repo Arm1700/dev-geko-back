@@ -1,11 +1,14 @@
 from django.contrib import admin
 from django import forms
-from .models import Event, EventTranslation, Category, CategoryTranslation, PopularCourse, PopularCourseTranslation, Review, ReviewTranslation, Language
+from .models import Event, EventTranslation, Category, CategoryTranslation, PopularCourse, PopularCourseTranslation, \
+    Review, ReviewTranslation, Language, LessonInfoTranslation, LessonInfo
 from .filters import ReviewLanguageFilter
+
 
 # Общий класс для переключения языков
 class LanguageSwitcherMixin:
-    def get_language_switcher_form(self, request, session_key, default_language='en'):
+    @staticmethod
+    def get_language_switcher_form(request, session_key, default_language='en'):
         languages = Language.objects.all()
         current_language = request.session.get(session_key, default_language)
 
@@ -30,15 +33,14 @@ class LanguageSwitcherMixin:
         return super().changeform_view(request, object_id, form_url, extra_context)
 
 
-# Админка для Language
 class LanguageAdmin(admin.ModelAdmin):
     list_display = ('code', 'name')
     search_fields = ('code', 'name')
 
+
 admin.site.register(Language, LanguageAdmin)
 
 
-# Админка для PopularCourse
 class PopularCourseTranslationInline(admin.StackedInline):
     model = PopularCourseTranslation
     extra = 1
@@ -51,6 +53,7 @@ class PopularCourseTranslationInline(admin.StackedInline):
         'certification',
     )
 
+
 class PopularCourseAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [PopularCourseTranslationInline]
     list_display = ('id', 'category', 'lectures', 'quizzes', 'duration', 'students', 'price')
@@ -58,13 +61,14 @@ class PopularCourseAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     list_filter = ('category', 'students', 'translations__skill_level')
     session_key = 'popular_course_translation_language'
 
+
 admin.site.register(PopularCourse, PopularCourseAdmin)
 
 
-# Админка для Category
 class CategoryTranslationInline(admin.TabularInline):
     model = CategoryTranslation
     extra = 1
+
 
 class CategoryAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [CategoryTranslationInline]
@@ -73,10 +77,30 @@ class CategoryAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     list_filter = ('translations__language',)
     session_key = 'category_translation_language'
 
+
 admin.site.register(Category, CategoryAdmin)
 
 
-# Админка для Event
+class LessonInfoTranslationInline(admin.StackedInline):
+    model = LessonInfoTranslation
+    extra = 1
+    fields = (
+        'language',
+        'title',
+    )
+
+
+class LessonInfoAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
+    inlines = [LessonInfoTranslationInline]
+    list_display = ('id', 'icon', 'count')
+    search_fields = ('translations__title',)
+    list_filter = ('icon',)
+    session_key = 'lesson_info_translation_language'
+
+
+admin.site.register(LessonInfo, LessonInfoAdmin)
+
+
 class EventTranslationInline(admin.StackedInline):
     model = EventTranslation
     extra = 1
@@ -87,21 +111,23 @@ class EventTranslationInline(admin.StackedInline):
         'place'
     )
 
+
 class EventAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [EventTranslationInline]
     list_display = ('id', 'day', 'month', 'hour', 'status', 'total_slots', 'booked_slots', 'cost')
-    search_fields = ('translations__title', )
+    search_fields = ('translations__title',)
     list_filter = ('month', 'status')
     session_key = 'event_translation_language'
+
 
 admin.site.register(Event, EventAdmin)
 
 
-# Админка для Review
 class ReviewTranslationInline(admin.StackedInline):
     model = ReviewTranslation
     extra = 1
     fields = ('language', 'comment')
+
 
 class ReviewAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [ReviewTranslationInline]
@@ -109,5 +135,6 @@ class ReviewAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     search_fields = ('translations__comment', 'name')
     list_filter = (ReviewLanguageFilter,)
     session_key = 'review_translation_language'
+
 
 admin.site.register(Review, ReviewAdmin)

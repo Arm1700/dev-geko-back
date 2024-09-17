@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Language(models.Model):
-    code = models.CharField(max_length=10, unique=True)  # Код языка, например: en, ru
-    name = models.CharField(max_length=50)  # Название языка, например: English, Russian
+    code = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
@@ -61,7 +61,7 @@ class Event(models.Model):
     day = models.IntegerField()
     month = models.CharField(max_length=20, choices=MONTH_CHOICES)
     hour = models.CharField(max_length=50)
-    image = models.JSONField()  # Stores an array of image URLs
+    image = models.JSONField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     total_slots = models.IntegerField()
     booked_slots = models.IntegerField()
@@ -89,6 +89,18 @@ class Review(models.Model):
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
         return translation.comment if translation else "No translation available"
+
+
+class LessonInfo(models.Model):
+    icon = models.CharField(max_length=50)
+    count = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f'{self.get_translation("en")}: {self.count}'
+
+    def get_translation(self, language_code):
+        translation = self.translations.filter(language__code=language_code).first()
+        return translation.title if translation else "No translation available"
 
 
 class CategoryTranslation(models.Model):
@@ -144,3 +156,15 @@ class ReviewTranslation(models.Model):
 
     def __str__(self):
         return f'{self.language.code}: {self.review.name}'
+
+
+class LessonInfoTranslation(models.Model):
+    lesson_info = models.ForeignKey(LessonInfo, related_name='translations', on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('lesson_info', 'language')
+
+    def __str__(self):
+        return f'{self.language.code}: {self.title}'
