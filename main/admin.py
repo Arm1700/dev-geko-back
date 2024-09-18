@@ -3,6 +3,7 @@ from django import forms
 from .models import Event, EventTranslation, Category, CategoryTranslation, PopularCourse, PopularCourseTranslation, \
     Review, ReviewTranslation, Language, LessonInfoTranslation, LessonInfo
 from .filters import ReviewLanguageFilter
+from adminsortable2.admin import SortableAdminMixin
 
 
 # Общий класс для переключения языков
@@ -54,7 +55,7 @@ class PopularCourseTranslationInline(admin.StackedInline):
     )
 
 
-class PopularCourseAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
+class PopularCourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     inlines = [PopularCourseTranslationInline]
     list_display = ('id', 'category', 'lectures', 'quizzes', 'duration', 'students', 'price')
     search_fields = ('translations__title', 'category__translations__text')
@@ -70,7 +71,7 @@ class CategoryTranslationInline(admin.TabularInline):
     extra = 1
 
 
-class CategoryAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
+class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
     inlines = [CategoryTranslationInline]
     list_display = ('id', 'image', 'order')
     list_editable = ['order']
@@ -78,6 +79,10 @@ class CategoryAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     list_filter = ('translations__language',)
     session_key = 'category_translation_language'
     ordering = ['order']
+
+    def save_model(self, request, obj, form, change):
+        # Custom save logic if needed
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(Category, CategoryAdmin)

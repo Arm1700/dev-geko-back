@@ -1,11 +1,12 @@
 from django.core.mail import BadHeaderError, send_mail
+from rest_framework.decorators import action
 from rest_framework.views import APIView
 from django.http import HttpResponse
 from django.db import connection
 
 from . import serializers
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import Event, Category, PopularCourse, Review, LessonInfo
 from .serializers import EventSerializer, CategorySerializer, PopularCourseSerializer, ReviewSerializer, \
@@ -21,6 +22,35 @@ class CategoryViewSet(viewsets.ModelViewSet):
         context['language_code'] = self.request.query_params.get('language',
                                                                  'en')
         return context
+
+    @action(detail=False, methods=['post'])
+    def update_order(self, request):
+        order_data = request.data.get('order', [])
+        for index, item_id in enumerate(order_data):
+            Category.objects.filter(id=item_id).update(order=index)
+        return Response({'status': 'order updated'})
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from .models import Category
+
+@csrf_exempt
+@require_POST
+def update_category_order(request):
+    import json
+    data = json.loads(request.body)
+    order = data.get('order', [])
+
+    for index, category_id in enumerate(order):
+        try:
+            category = Category.objects.get(id=category_id)
+            category.order = index
+            category.save()
+        except Category.DoesNotExist:
+            return JsonResponse({'error': 'Invalid category id'}, status=400)
+
+    return JsonResponse({'status': 'order updated'})
 
 
 class PopularCourseViewSet(viewsets.ModelViewSet):

@@ -11,7 +11,7 @@ class Language(models.Model):
 
 class Category(models.Model):
     image = models.URLField(max_length=255, blank=True, null=True)
-    order = models.PositiveIntegerField(default=0)
+    order = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
         ordering = ['order']
@@ -32,6 +32,10 @@ class PopularCourse(models.Model):
     duration = models.CharField(max_length=50)
     students = models.IntegerField()
     price = models.CharField(max_length=50)
+    order = models.PositiveIntegerField(default=0, blank=True, null=True)
+
+    class Meta:
+        ordering = ['order']
 
     def __str__(self):
         return self.get_translation('en')
