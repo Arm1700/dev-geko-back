@@ -3,7 +3,10 @@ from rest_framework.decorators import action
 from rest_framework.views import APIView
 from django.http import HttpResponse
 from django.db import connection
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from rest_framework.decorators import api_view
 from . import serializers
 
 from rest_framework import viewsets, status
@@ -11,6 +14,25 @@ from rest_framework.response import Response
 from .models import Event, Category, PopularCourse, Review, LessonInfo
 from .serializers import EventSerializer, CategorySerializer, PopularCourseSerializer, ReviewSerializer, \
     LessonInfoSerializer
+
+
+@api_view(['GET'])
+def courses_by_category(request, category_id):
+    language_code = request.query_params.get('language', 'en')  # Получаем язык, по умолчанию 'en'
+
+    try:
+        # Находим категорию по ID
+        category = Category.objects.get(id=category_id)
+    except Category.DoesNotExist:
+        return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Получаем курсы, относящиеся к данной категории
+    courses = PopularCourse.objects.filter(category=category)
+
+    # Передаём language_code в сериализатор
+    serializer = PopularCourseSerializer(courses, many=True, context={'language_code': language_code})
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -30,10 +52,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
             Category.objects.filter(id=item_id).update(order=index)
         return Response({'status': 'order updated'})
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
-from .models import Category
+
 
 @csrf_exempt
 @require_POST
@@ -131,3 +150,5 @@ class ContactFormView(APIView):
                 return HttpResponse("Make sure all fields are entered and valid.")
         else:
             return Response(serializer.errors, status=400)
+
+

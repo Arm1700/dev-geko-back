@@ -60,7 +60,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'image', 'translations','order')
+        fields = ('id', 'image', 'translations', 'order')
 
     def to_representation(self, instance):
         language_code = self.context.get('language_code', None)
