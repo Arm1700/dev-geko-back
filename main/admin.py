@@ -6,7 +6,6 @@ from .filters import ReviewLanguageFilter
 from adminsortable2.admin import SortableAdminMixin
 
 
-# Общий класс для переключения языков
 class LanguageSwitcherMixin:
     @staticmethod
     def get_language_switcher_form(request, session_key, default_language='en'):
@@ -73,9 +72,9 @@ class CategoryTranslationInline(admin.TabularInline):
 
 class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
     inlines = [CategoryTranslationInline]
-    list_display = ('id', 'image', 'order')
+    list_display = ('id', 'get_image', 'order')
     list_editable = ['order']
-    search_fields = ('translations__text', 'image')
+    search_fields = ('translations__text', 'local_image', 'image_url')
     list_filter = ('translations__language',)
     session_key = 'category_translation_language'
     ordering = ['order']

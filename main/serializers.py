@@ -56,11 +56,19 @@ class LessonInfoTranslationSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     translations = CategoryTranslationSerializer(many=True)
 
     class Meta:
         model = Category
         fields = ('id', 'image', 'translations', 'order')
+
+    def get_image(self, obj):
+        if obj.local_image:
+            return obj.local_image.url
+        elif obj.image_url:
+            return obj.image_url
+        return None
 
     def to_representation(self, instance):
         language_code = self.context.get('language_code', None)
@@ -75,12 +83,20 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class PopularCourseSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     translations = PopularCourseTranslationSerializer(many=True)
     category = CategorySerializer()
 
     class Meta:
         model = PopularCourse
         fields = ('id', 'category', 'image', 'lectures', 'quizzes', 'duration', 'students', 'price', 'translations')
+
+    def get_image(self, obj):
+        if obj.local_image:
+            return obj.local_image.url
+        elif obj.image_url:
+            return obj.image_url
+        return None
 
     def to_representation(self, instance):
         language_code = self.context.get('language_code', None)
@@ -95,6 +111,7 @@ class PopularCourseSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     translations = EventTranslationSerializer(many=True)
     available_slots = serializers.ReadOnlyField()
 
@@ -103,6 +120,13 @@ class EventSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots', 'cost', 'available_slots',
             'translations')
+
+    def get_image(self, obj):
+        if obj.local_image:
+            return obj.local_image.url
+        elif obj.image_url:
+            return obj.image_url
+        return None
 
     def to_representation(self, instance):
         language_code = self.context.get('language_code', None)
@@ -117,11 +141,19 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     translations = ReviewTranslationSerializer(many=True)
 
     class Meta:
         model = Review
         fields = ['id', 'image', 'name', 'translations']
+
+    def get_image(self, obj):
+        if obj.local_image:
+            return obj.local_image.url
+        elif obj.image_url:
+            return obj.image_url
+        return None
 
     def to_representation(self, instance):
         language_code = self.context.get('language_code', None)
@@ -138,6 +170,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class LessonInfoSerializer(serializers.ModelSerializer):
     translations = LessonInfoTranslationSerializer(many=True, read_only=True)
     icon = serializers.CharField()
+
     class Meta:
         model = LessonInfo
         fields = ['id', 'icon', 'count', 'translations']

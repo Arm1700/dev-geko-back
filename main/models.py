@@ -10,7 +10,8 @@ class Language(models.Model):
 
 
 class Category(models.Model):
-    image = models.URLField(max_length=255, blank=True, null=True)
+    local_image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image_url = models.URLField(max_length=255, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
@@ -19,6 +20,13 @@ class Category(models.Model):
     def __str__(self):
         return self.get_translation('en')
 
+    def get_image(self):
+        if self.local_image:
+            return self.local_image.url
+        elif self.image_url:
+            return self.image_url
+        return None
+
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
         return translation.text if translation else "No translation available"
@@ -26,7 +34,8 @@ class Category(models.Model):
 
 class PopularCourse(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    image = models.URLField(max_length=255, blank=True, null=True)
+    local_image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image_url = models.URLField(max_length=255, blank=True, null=True)
     lectures = models.IntegerField()
     quizzes = models.IntegerField()
     duration = models.CharField(max_length=50)
@@ -39,6 +48,13 @@ class PopularCourse(models.Model):
 
     def __str__(self):
         return self.get_translation('en')
+
+    def get_image(self):
+        if self.local_image:
+            return self.local_image.url
+        elif self.image_url:
+            return self.image_url
+        return None
 
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
@@ -69,7 +85,8 @@ class Event(models.Model):
     day = models.IntegerField()
     month = models.CharField(max_length=20, choices=MONTH_CHOICES)
     hour = models.CharField(max_length=50)
-    image = models.JSONField()
+    local_image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image_url = models.URLField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     total_slots = models.IntegerField()
     booked_slots = models.IntegerField()
@@ -82,17 +99,32 @@ class Event(models.Model):
     def __str__(self):
         return self.get_translation('en')
 
+    def get_image(self):
+        if self.local_image:
+            return self.local_image.url
+        elif self.image_url:
+            return self.image_url
+        return None
+
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
         return translation.title if translation else "No translation available"
 
 
 class Review(models.Model):
-    image = models.URLField(max_length=255, blank=True, null=True)
+    local_image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image_url = models.URLField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
+
+    def get_image(self):
+        if self.local_image:
+            return self.local_image.url
+        elif self.image_url:
+            return self.image_url
+        return None
 
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
