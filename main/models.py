@@ -40,7 +40,6 @@ class PopularCourse(models.Model):
     quizzes = models.IntegerField()
     duration = models.CharField(max_length=50)
     students = models.IntegerField()
-    price = models.CharField(max_length=50)
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
@@ -90,7 +89,6 @@ class Event(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     total_slots = models.IntegerField()
     booked_slots = models.IntegerField()
-    cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     @property
     def available_slots(self):

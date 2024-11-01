@@ -56,7 +56,7 @@ class PopularCourseTranslationInline(admin.StackedInline):
 
 class PopularCourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     inlines = [PopularCourseTranslationInline]
-    list_display = ('id', 'category', 'lectures', 'quizzes', 'duration', 'students', 'price')
+    list_display = ('id', 'category', 'lectures', 'quizzes', 'duration', 'students')
     search_fields = ('translations__title', 'category__translations__text')
     list_filter = ('category', 'students', 'translations__skill_level')
     session_key = 'popular_course_translation_language'
@@ -120,7 +120,7 @@ class EventTranslationInline(admin.StackedInline):
 
 class EventAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [EventTranslationInline]
-    list_display = ('id', 'day', 'month', 'hour', 'status', 'total_slots', 'booked_slots', 'cost')
+    list_display = ('id', 'day', 'month', 'hour', 'status', 'total_slots', 'booked_slots')
     search_fields = ('translations__title',)
     list_filter = ('month', 'status')
     session_key = 'event_translation_language'

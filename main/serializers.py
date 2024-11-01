@@ -89,7 +89,7 @@ class PopularCourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PopularCourse
-        fields = ('id', 'category', 'image', 'lectures', 'quizzes', 'duration', 'students', 'price', 'translations')
+        fields = ('id', 'category', 'image', 'lectures', 'quizzes', 'duration', 'students',  'translations')
 
     def get_image(self, obj):
         if obj.local_image:
@@ -118,7 +118,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots', 'cost', 'available_slots',
+            'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots',  'available_slots',
             'translations')
 
     def get_image(self, obj):
