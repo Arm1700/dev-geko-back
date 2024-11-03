@@ -18,22 +18,26 @@ from .serializers import EventSerializer, CategorySerializer, PopularCourseSeria
 
 @api_view(['GET'])
 def courses_by_category(request, category_id):
+    language_code = request.query_params.get('language', 'en')
+    try:
+        category = Category.objects.get(id=category_id)
+    except Category.DoesNotExist:
+        return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+    courses = PopularCourse.objects.filter(category=category)
+    serializer = PopularCourseSerializer(courses, many=True, context={'language_code': language_code})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def events_one(request, events_id):
     language_code = request.query_params.get('language', 'en')  # Получаем язык, по умолчанию 'en'
 
     try:
         # Находим категорию по ID
-        category = Category.objects.get(id=category_id)
-    except Category.DoesNotExist:
+        event = Event.objects.get(id=events_id)
+    except Event.DoesNotExist:
         return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    # Получаем курсы, относящиеся к данной категории
-    courses = PopularCourse.objects.filter(category=category)
-
-    # Передаём language_code в сериализатор
-    serializer = PopularCourseSerializer(courses, many=True, context={'language_code': language_code})
-
+    serializer = EventSerializer(event, many=True, context={'language_code': language_code})
     return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()

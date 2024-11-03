@@ -82,13 +82,13 @@ class Event(models.Model):
         ('December', 'December'),
     ]
     day = models.IntegerField()
-    month = models.CharField(max_length=20, choices=MONTH_CHOICES)
     hour = models.CharField(max_length=50)
-    local_image = models.ImageField(upload_to='images/', blank=True, null=True)
-    image_url = models.URLField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    month = models.CharField(max_length=20, choices=MONTH_CHOICES)
+    image = models.ImageField(upload_to='event_gallery_photos/', blank=True, null=True)
     total_slots = models.IntegerField()
     booked_slots = models.IntegerField()
+    order = models.PositiveIntegerField(default=0, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
     @property
     def available_slots(self):
@@ -97,16 +97,27 @@ class Event(models.Model):
     def __str__(self):
         return self.get_translation('en')
 
-    def get_image(self):
-        if self.local_image:
-            return self.local_image.url
-        elif self.image_url:
-            return self.image_url
-        return None
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)  # Ensure the base save is called
+        images = form.cleaned_data.get('img', [])
+        for image in images:
+            EventGallery.objects.create(course=obj, img=image)
 
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
         return translation.title if translation else "No translation available"
+
+
+class EventGallery(models.Model):
+    event = models.ForeignKey(Event, related_name='event_galleries', on_delete=models.CASCADE)
+    img = models.ImageField(upload_to='event_gallery_photos/', blank=True, null=True)
+    order = models.PositiveIntegerField(default=0, blank=True, null=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Event gallery {self.id} - {self.event.title}" if self.event else "Event Gallery"
 
 
 class Review(models.Model):

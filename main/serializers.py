@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Language, Category, Review, Event, PopularCourse, CategoryTranslation, PopularCourseTranslation, \
-    ReviewTranslation, EventTranslation, LessonInfoTranslation, LessonInfo
+    ReviewTranslation, EventTranslation, LessonInfoTranslation, LessonInfo, EventGallery
 
 
 class ContactFormSerializer(serializers.Serializer):
@@ -110,23 +110,24 @@ class PopularCourseSerializer(serializers.ModelSerializer):
         return representation
 
 
+class EventGallerySerializer(serializers.ModelSerializer):
+    event_gallery_name = serializers.CharField(source='event.name', read_only=True)
+
+    class Meta:
+        model = EventGallery
+        fields = ['id', 'event', 'event_gallery_name', 'img', 'order']
+
+
 class EventSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
     translations = EventTranslationSerializer(many=True)
     available_slots = serializers.ReadOnlyField()
+    event_galleries = EventGallerySerializer(many=True,  required=False)
 
     class Meta:
         model = Event
         fields = (
             'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots',  'available_slots',
-            'translations')
-
-    def get_image(self, obj):
-        if obj.local_image:
-            return obj.local_image.url
-        elif obj.image_url:
-            return obj.image_url
-        return None
+            'order', 'event_galleries', 'translations')
 
     def to_representation(self, instance):
         language_code = self.context.get('language_code', None)

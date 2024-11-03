@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django import forms
+
+from .forms import EventGalleryForm
 from .models import Event, EventTranslation, Category, CategoryTranslation, PopularCourse, PopularCourseTranslation, \
-    Review, ReviewTranslation, Language, LessonInfoTranslation, LessonInfo
+    Review, ReviewTranslation, Language, LessonInfoTranslation, LessonInfo, EventGallery
 from .filters import ReviewLanguageFilter
-from adminsortable2.admin import SortableAdminMixin
+from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 
 
 class LanguageSwitcherMixin:
@@ -118,12 +120,31 @@ class EventTranslationInline(admin.StackedInline):
     )
 
 
-class EventAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
-    inlines = [EventTranslationInline]
-    list_display = ('id', 'day', 'month', 'hour', 'status', 'total_slots', 'booked_slots')
+class EventGalleryInline(SortableInlineAdminMixin, admin.TabularInline):
+    model = EventGallery
+    extra = 0
+    fields = ['img', 'order']
+    sortable_field_name = "order"
+
+
+class EventAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
+    inlines = [EventTranslationInline, EventGalleryInline]
+    form = EventGalleryForm
+    list_display = ('id', 'day', 'month', 'hour', 'status', 'total_slots', 'booked_slots', 'order')
+    field = '__all__'
     search_fields = ('translations__title',)
     list_filter = ('month', 'status')
     session_key = 'event_translation_language'
+    ordering = ['order']
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        # Handling multiple images for Gallery
+        images = form.cleaned_data.get('images')
+        if images:
+            for image in images:
+                EventGallery.objects.create(event=obj, img=image)
 
 
 admin.site.register(Event, EventAdmin)
