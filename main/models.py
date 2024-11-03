@@ -127,9 +127,10 @@ class EventGallery(models.Model):
 
 
 class Review(models.Model):
-    local_image = models.ImageField(upload_to='images/', blank=True, null=True)
+    local_image = models.ImageField(upload_to='review_images/', blank=True, null=True)
     image_url = models.URLField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255)
+    comment = models.TextField()
 
     def __str__(self):
         return self.name
@@ -140,10 +141,6 @@ class Review(models.Model):
         elif self.image_url:
             return self.image_url
         return None
-
-    def get_translation(self, language_code):
-        translation = self.translations.filter(language__code=language_code).first()
-        return translation.comment if translation else "No translation available"
 
 
 class LessonInfo(models.Model):
@@ -199,18 +196,6 @@ class EventTranslation(models.Model):
 
     def __str__(self):
         return f'{self.language.code}: {self.title}'
-
-
-class ReviewTranslation(models.Model):
-    review = models.ForeignKey(Review, related_name='translations', on_delete=models.CASCADE)
-    language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    comment = models.TextField()
-
-    class Meta:
-        unique_together = ('review', 'language')
-
-    def __str__(self):
-        return f'{self.language.code}: {self.review.name}'
 
 
 class LessonInfoTranslation(models.Model):

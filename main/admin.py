@@ -3,7 +3,7 @@ from django import forms
 
 from .forms import EventGalleryForm
 from .models import Event, EventTranslation, Category, CategoryTranslation, PopularCourse, PopularCourseTranslation, \
-    Review, ReviewTranslation, Language, LessonInfoTranslation, LessonInfo, EventGallery
+    Review, Language, LessonInfoTranslation, LessonInfo, EventGallery
 from .filters import ReviewLanguageFilter
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 
@@ -150,16 +150,9 @@ class EventAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
 admin.site.register(Event, EventAdmin)
 
 
-class ReviewTranslationInline(admin.StackedInline):
-    model = ReviewTranslation
-    extra = 1
-    fields = ('language', 'comment')
-
-
 class ReviewAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
-    inlines = [ReviewTranslationInline]
     list_display = ('id', 'name')
-    search_fields = ('translations__comment', 'name')
+    search_fields = ('translations__comment', 'name', 'comment')
     list_filter = (ReviewLanguageFilter,)
     session_key = 'review_translation_language'
 
