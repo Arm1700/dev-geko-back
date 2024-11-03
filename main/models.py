@@ -117,8 +117,11 @@ class EventGallery(models.Model):
         ordering = ['order']
 
     def __str__(self):
-        return f"Event gallery {self.id} - {self.event.title}" if self.event else "Event Gallery"
-
+        # Get the current language code; you may need to adjust this based on your implementation
+        current_language = 'en'  # Replace with actual logic to get the current language
+        translation = self.event.translations.filter(language__code=current_language).first()
+        title = translation.title if translation else self.event.title  # Fallback to the default title if translation not found
+        return f"Event gallery {self.id} - {title}" if self.event else "Event Gallery"
 
 class Review(models.Model):
     local_image = models.ImageField(upload_to='images/', blank=True, null=True)
