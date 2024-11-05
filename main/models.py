@@ -168,6 +168,10 @@ class CategoryTranslation(models.Model):
 
 
 class PopularCourseTranslation(models.Model):
+    STATUS_CHOICES = [
+        ('yes', 'Yes'),
+        ('no', 'No'),
+    ]
     popular_course = models.ForeignKey(PopularCourse, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
@@ -175,7 +179,7 @@ class PopularCourseTranslation(models.Model):
     assessments = models.CharField(max_length=50)
     lang = models.CharField(max_length=50)
     desc = models.TextField()
-    certification = models.TextField()
+    certification = models.TextField(default='yes',choices=STATUS_CHOICES)
 
     class Meta:
         unique_together = ('popular_course', 'language')
