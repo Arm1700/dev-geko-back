@@ -18,14 +18,14 @@ class Category(models.Model):
         ordering = ['order']
 
     def __str__(self):
-        return self.get_translation('en')
+        return self.get_translation('en') or "No translation available"
 
     def get_image(self):
         if self.local_image:
             return self.local_image.url
         elif self.image_url:
             return self.image_url
-        return None
+        return "No image available"
 
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()

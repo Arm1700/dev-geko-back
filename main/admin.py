@@ -46,19 +46,11 @@ admin.site.register(Language, LanguageAdmin)
 class PopularCourseTranslationInline(admin.StackedInline):
     model = PopularCourseTranslation
     extra = 1
-    fields = (
-        'language',
-        'title',
-        'skill_level',
-        'assessments',
-        'desc',
-        'certification',
-    )
 
 
 class PopularCourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     inlines = [PopularCourseTranslationInline]
-    list_display = ('id', 'category', 'lectures', 'quizzes', 'duration', 'students')
+    list_display = ('id', 'category', 'lectures', 'quizzes', 'duration', 'students', 'order')
     search_fields = ('translations__title', 'category__translations__text')
     list_filter = ('category', 'students', 'translations__skill_level')
     session_key = 'popular_course_translation_language'
@@ -74,12 +66,18 @@ class CategoryTranslationInline(admin.TabularInline):
 
 class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
     inlines = [CategoryTranslationInline]
-    list_display = ('id', 'get_image', 'order')
+    list_display = ('id', 'get_text', 'order')
     list_editable = ['order']
     search_fields = ('translations__text', 'local_image', 'image_url')
     list_filter = ('translations__language',)
     session_key = 'category_translation_language'
     ordering = ['order']
+
+    def get_text(self, obj):
+        # Retrieves the English translation or any other language if specified
+        translation = obj.get_translation('en')  # Default to English
+        return translation if translation else "No translation available"
+    get_text.short_description = 'Text (EN)'  # Column header in admin
 
     def save_model(self, request, obj, form, change):
         # Custom save logic if needed
