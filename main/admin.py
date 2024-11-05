@@ -3,7 +3,7 @@ from django import forms
 
 from .forms import EventGalleryForm
 from .models import Event, EventTranslation, Category, CategoryTranslation, PopularCourse, PopularCourseTranslation, \
-    Review, Language, LessonInfoTranslation, LessonInfo, EventGallery
+    Review, Language, LessonInfoTranslation, LessonInfo, EventGallery, Team, TeamTranslation
 from .filters import ReviewLanguageFilter
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 
@@ -85,6 +85,34 @@ class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 
 admin.site.register(Category, CategoryAdmin)
+
+
+class TeamTranslationInline(admin.TabularInline):
+    model = TeamTranslation
+    extra = 1
+
+
+class TeamAdmin(SortableAdminMixin, admin.ModelAdmin):
+    inlines = [TeamTranslationInline]
+    list_display = ('id', 'get_name', 'order')
+    list_editable = ['order']
+    search_fields = ('translations__name', 'local_image', 'image_url')
+    list_filter = ('translations__language',)
+    session_key = 'team_translation_language'
+    ordering = ['order']
+
+    def get_name(self, obj):
+        # Retrieves the English translation or any other language if specified
+        translation = obj.get_translation('en')  # Default to English
+        return translation if translation else "No translation available"
+    get_name.short_description = 'Name (EN)'  # Column header in admin
+
+    def save_model(self, request, obj, form, change):
+        # Custom save logic if needed
+        super().save_model(request, obj, form, change)
+
+
+admin.site.register(Team, TeamAdmin)
 
 
 class LessonInfoTranslationInline(admin.StackedInline):

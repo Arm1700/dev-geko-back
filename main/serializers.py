@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Language, Category, Review, Event, PopularCourse, CategoryTranslation, PopularCourseTranslation, \
-    EventTranslation, LessonInfoTranslation, LessonInfo, EventGallery
+    EventTranslation, LessonInfoTranslation, LessonInfo, EventGallery, TeamTranslation, Team
 
 
 class ContactFormSerializer(serializers.Serializer):
@@ -21,6 +21,14 @@ class CategoryTranslationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryTranslation
         fields = ('language', 'text')
+
+
+class TeamTranslationSerializer(serializers.ModelSerializer):
+    language = LanguageSerializer()
+
+    class Meta:
+        model = TeamTranslation
+        fields = ('language', 'desc', 'name')
 
 
 class PopularCourseTranslationSerializer(serializers.ModelSerializer):
@@ -53,6 +61,33 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
+        fields = ('id', 'image', 'translations', 'order')
+
+    def get_image(self, obj):
+        if obj.local_image:
+            return obj.local_image.url
+        elif obj.image_url:
+            return obj.image_url
+        return None
+
+    def to_representation(self, instance):
+        language_code = self.context.get('language_code', None)
+        representation = super().to_representation(instance)
+
+        if language_code:
+            translation = next((t for t in representation['translations'] if t['language']['code'] == language_code),
+                               None)
+            representation['translation'] = translation
+            representation.pop('translations')
+        return representation
+
+
+class TeamSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    translations = TeamTranslationSerializer(many=True)
+
+    class Meta:
+        model = Team
         fields = ('id', 'image', 'translations', 'order')
 
     def get_image(self, obj):

@@ -167,6 +167,42 @@ class CategoryTranslation(models.Model):
         return f'{self.language.code}: {self.text}'
 
 
+class Team(models.Model):
+    local_image = models.ImageField(upload_to='team_images/', blank=True, null=True)
+    image_url = models.URLField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0, blank=True, null=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.get_translation('en') or "No translation available"
+
+    def get_image(self):
+        if self.local_image:
+            return self.local_image.url
+        elif self.image_url:
+            return self.image_url
+        return "No image available"
+
+    def get_translation(self, language_code):
+        translation = self.translations.filter(language__code=language_code).first()
+        return translation.name if translation else "No translation available"
+
+
+class TeamTranslation(models.Model):
+    team = models.ForeignKey(Team, related_name='translations', on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    desc = models.TextField()
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('team', 'language')
+
+    def __str__(self):
+        return f'{self.language.code}: {self.name}'
+
+
 class PopularCourseTranslation(models.Model):
     STATUS_CHOICES = [
         ('yes', 'Yes'),
@@ -179,7 +215,7 @@ class PopularCourseTranslation(models.Model):
     assessments = models.CharField(max_length=50)
     lang = models.CharField(max_length=50)
     desc = models.TextField()
-    certification = models.TextField(default='yes',choices=STATUS_CHOICES)
+    certification = models.TextField(default='yes', choices=STATUS_CHOICES)
 
     class Meta:
         unique_together = ('popular_course', 'language')
