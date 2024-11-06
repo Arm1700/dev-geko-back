@@ -1,5 +1,30 @@
 from django.db import models
 
+STATUS_CHOICES = [
+    ('yes', 'Yes'),
+    ('no', 'No'),
+]
+STATUS_CHOICES_EVENT = [
+    ('upcoming', 'Upcoming'),
+    ('happening', 'Happening'),
+    ('completed', 'Completed'),
+]
+
+MONTH_CHOICES = [
+    ('January', 'January'),
+    ('February', 'February'),
+    ('March', 'March'),
+    ('April', 'April'),
+    ('May', 'May'),
+    ('June', 'June'),
+    ('July', 'July'),
+    ('August', 'August'),
+    ('September', 'September'),
+    ('October', 'October'),
+    ('November', 'November'),
+    ('December', 'December'),
+]
+
 
 class Language(models.Model):
     code = models.CharField(max_length=10, unique=True)
@@ -36,10 +61,11 @@ class PopularCourse(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     local_image = models.ImageField(upload_to='images/', blank=True, null=True)
     image_url = models.URLField(max_length=255, blank=True, null=True)
-    lectures = models.IntegerField()
-    quizzes = models.IntegerField()
     duration = models.CharField(max_length=50)
-    students = models.IntegerField()
+    certification = models.TextField(default='yes', choices=STATUS_CHOICES)
+    students = models.TextField(default='yes', choices=STATUS_CHOICES)
+    studentGroup = models.TextField(default='yes', choices=STATUS_CHOICES)
+    assessments = models.TextField(default='yes', choices=STATUS_CHOICES)
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
@@ -60,27 +86,22 @@ class PopularCourse(models.Model):
         return translation.title if translation else "No translation available"
 
 
-class Event(models.Model):
-    STATUS_CHOICES = [
-        ('upcoming', 'Upcoming'),
-        ('happening', 'Happening'),
-        ('completed', 'Completed'),
-    ]
+class PopularCourseTranslation(models.Model):
 
-    MONTH_CHOICES = [
-        ('January', 'January'),
-        ('February', 'February'),
-        ('March', 'March'),
-        ('April', 'April'),
-        ('May', 'May'),
-        ('June', 'June'),
-        ('July', 'July'),
-        ('August', 'August'),
-        ('September', 'September'),
-        ('October', 'October'),
-        ('November', 'November'),
-        ('December', 'December'),
-    ]
+    popular_course = models.ForeignKey(PopularCourse, related_name='translations', on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    lang = models.CharField(max_length=50)
+    desc = models.TextField()
+
+    class Meta:
+        unique_together = ('popular_course', 'language')
+
+    def __str__(self):
+        return f'{self.language.code}: {self.title}'
+
+
+class Event(models.Model):
     day = models.IntegerField()
     hour = models.CharField(max_length=50)
     month = models.CharField(max_length=20, choices=MONTH_CHOICES)
@@ -88,7 +109,7 @@ class Event(models.Model):
     total_slots = models.IntegerField()
     booked_slots = models.IntegerField()
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES_EVENT)
 
     @property
     def available_slots(self):
@@ -201,27 +222,6 @@ class TeamTranslation(models.Model):
 
     def __str__(self):
         return f'{self.language.code}: {self.name}'
-
-
-class PopularCourseTranslation(models.Model):
-    STATUS_CHOICES = [
-        ('yes', 'Yes'),
-        ('no', 'No'),
-    ]
-    popular_course = models.ForeignKey(PopularCourse, related_name='translations', on_delete=models.CASCADE)
-    language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    skill_level = models.CharField(max_length=50)
-    assessments = models.CharField(max_length=50)
-    lang = models.CharField(max_length=50)
-    desc = models.TextField()
-    certification = models.TextField(default='yes', choices=STATUS_CHOICES)
-
-    class Meta:
-        unique_together = ('popular_course', 'language')
-
-    def __str__(self):
-        return f'{self.language.code}: {self.title}'
 
 
 class EventTranslation(models.Model):

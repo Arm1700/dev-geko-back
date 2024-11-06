@@ -50,9 +50,9 @@ class PopularCourseTranslationInline(admin.StackedInline):
 
 class PopularCourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     inlines = [PopularCourseTranslationInline]
-    list_display = ('id', 'category', 'lectures', 'quizzes', 'duration', 'students', 'order')
+    list_display = ('id', 'category', 'duration', 'certification', 'students', 'studentGroup', 'assessments', 'order')
     search_fields = ('translations__title', 'category__translations__text')
-    list_filter = ('category', 'students', 'translations__skill_level')
+    list_filter = ('category', 'students', 'certification', 'studentGroup', 'assessments')
     session_key = 'popular_course_translation_language'
 
 

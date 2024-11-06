@@ -36,7 +36,7 @@ class PopularCourseTranslationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PopularCourseTranslation
-        fields = ('language', 'lang', 'title', 'skill_level', 'assessments', 'desc', 'certification')
+        fields = ('language', 'lang', 'title',  'desc')
 
 
 class EventTranslationSerializer(serializers.ModelSerializer):
@@ -116,7 +116,8 @@ class PopularCourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PopularCourse
-        fields = ('id', 'category', 'image', 'lectures', 'quizzes', 'duration', 'students',  'translations')
+        fields = ('id', 'category', 'image', 'duration', 'certification', 'students', 'studentGroup', 'assessments',
+                  'translations')
 
     def get_image(self, obj):
         if obj.local_image:
@@ -148,12 +149,12 @@ class EventGallerySerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     translations = EventTranslationSerializer(many=True)
     available_slots = serializers.ReadOnlyField()
-    event_galleries = EventGallerySerializer(many=True,  required=False)
+    event_galleries = EventGallerySerializer(many=True, required=False)
 
     class Meta:
         model = Event
         fields = (
-            'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots',  'available_slots',
+            'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots', 'available_slots',
             'order', 'event_galleries', 'translations')
 
     def to_representation(self, instance):
