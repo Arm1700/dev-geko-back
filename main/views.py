@@ -11,9 +11,9 @@ from . import serializers
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Event, Category, PopularCourse, Review, LessonInfo
+from .models import Event, Category, PopularCourse, Review, LessonInfo, Team
 from .serializers import EventSerializer, CategorySerializer, PopularCourseSerializer, ReviewSerializer, \
-    LessonInfoSerializer
+    LessonInfoSerializer, TeamSerializer
 
 
 @api_view(['GET'])
@@ -27,6 +27,7 @@ def courses_by_category(request, category_id):
     serializer = PopularCourseSerializer(courses, many=True, context={'language_code': language_code})
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 @api_view(['GET'])
 def events_one(request, events_id):
     language_code = request.query_params.get('language', 'en')  # Получаем язык, по умолчанию 'en'
@@ -38,6 +39,7 @@ def events_one(request, events_id):
         return Response({'error': 'Category not found'}, status=status.HTTP_404_NOT_FOUND)
     serializer = EventSerializer(event, many=True, context={'language_code': language_code})
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -112,6 +114,17 @@ class EventViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['language_code'] = self.request.query_params.get('language',
+                                                                 'en')
+        return context
+
+
+class TeamViewSet(viewsets.ModelViewSet):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
