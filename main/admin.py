@@ -59,7 +59,7 @@ class PopularCourseAdmin(SortableAdminMixin, admin.ModelAdmin):
 admin.site.register(PopularCourse, PopularCourseAdmin)
 
 
-class CategoryTranslationInline(admin.TabularInline):
+class CategoryTranslationInline(admin.StackedInline):
     model = CategoryTranslation
     extra = 1
 
@@ -87,12 +87,12 @@ class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 
-class TeamTranslationInline(admin.TabularInline):
+class TeamTranslationInline(admin.StackedInline):
     model = TeamTranslation
     extra = 1
 
 
-class TeamAdmin(SortableAdminMixin, admin.ModelAdmin):
+class TeamAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [TeamTranslationInline]
     list_display = ('id', 'get_name', 'order')
     list_editable = ['order']
@@ -156,10 +156,11 @@ class EventGalleryInline(SortableInlineAdminMixin, admin.TabularInline):
 class EventAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [EventTranslationInline, EventGalleryInline]
     form = EventGalleryForm
-    list_display = ('id', 'day', 'month', 'hour', 'status', 'total_slots', 'booked_slots', 'order')
+    list_display = ('id', 'day', 'month', 'hour', 'status', 'order')
+    # list_display = ('id', 'start_time', 'end_time', 'date',  'status', 'order')
+    # list_filter = ('date', 'status')
     field = '__all__'
     search_fields = ('translations__title',)
-    list_filter = ('month', 'status')
     session_key = 'event_translation_language'
     ordering = ['order']
 

@@ -28,7 +28,7 @@ class TeamTranslationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TeamTranslation
-        fields = ('language', 'desc', 'name')
+        fields = ('language', 'desc', 'name', 'role')
 
 
 class PopularCourseTranslationSerializer(serializers.ModelSerializer):
@@ -154,7 +154,8 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'id', 'day', 'month', 'hour', 'image', 'status', 'total_slots', 'booked_slots', 'available_slots',
+            # 'start_time', 'end_time', 'date',
+            'id', 'day', 'month', 'hour', 'image', 'status', 'available_slots',
             'order', 'event_galleries', 'translations')
 
     def to_representation(self, instance):

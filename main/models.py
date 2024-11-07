@@ -106,17 +106,13 @@ class Event(models.Model):
     hour = models.CharField(max_length=50)
     month = models.CharField(max_length=20, choices=MONTH_CHOICES)
     image = models.ImageField(upload_to='event_gallery_photos/', blank=True, null=True)
-    total_slots = models.IntegerField()
-    booked_slots = models.IntegerField()
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES_EVENT)
-
-    @property
-    def available_slots(self):
-        return self.total_slots - self.booked_slots
-
-    def __str__(self):
-        return self.get_translation('en')
+    # start_time = models.TimeField()
+    # end_time = models.TimeField()
+    # date = models.DateField()
+    # def __str__(self):
+    #     return f"Event on {self.date} from {self.start_time} to {self.end_time}"
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)  # Ensure the base save is called
@@ -149,7 +145,8 @@ class EventGallery(models.Model):
 
 class Review(models.Model):
     local_image = models.ImageField(upload_to='review_images/', blank=True, null=True)
-    image_url = models.URLField(max_length=255, blank=True, null=True)
+    image_url = models.URLField(default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7'
+                                        '-170x170.png', max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255)
     comment = models.TextField()
 
@@ -179,7 +176,7 @@ class LessonInfo(models.Model):
 class CategoryTranslation(models.Model):
     category = models.ForeignKey(Category, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    text = models.CharField(max_length=255)
+    text = models.CharField(default='Default text', max_length=255)
 
     class Meta:
         unique_together = ('category', 'language')
@@ -190,7 +187,8 @@ class CategoryTranslation(models.Model):
 
 class Team(models.Model):
     local_image = models.ImageField(upload_to='team_images/', blank=True, null=True)
-    image_url = models.URLField(max_length=255, blank=True, null=True)
+    image_url = models.URLField(default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7'
+                                        '-170x170.png', max_length=255, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
@@ -214,8 +212,9 @@ class Team(models.Model):
 class TeamTranslation(models.Model):
     team = models.ForeignKey(Team, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    desc = models.TextField()
-    name = models.CharField(max_length=255)
+    desc = models.TextField(default='Default desc')
+    name = models.CharField(default='Default name', max_length=255)
+    role = models.CharField(default='Default role', max_length=255)
 
     class Meta:
         unique_together = ('team', 'language')
@@ -225,11 +224,11 @@ class TeamTranslation(models.Model):
 
 
 class EventTranslation(models.Model):
-    place = models.CharField(max_length=255)
+    place = models.CharField(default='Default place', max_length=255)
     event = models.ForeignKey(Event, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    title = models.CharField(default='Default title', max_length=255)
+    description = models.CharField(default='Default description', max_length=255)
 
     class Meta:
         unique_together = ('event', 'language')
@@ -241,7 +240,7 @@ class EventTranslation(models.Model):
 class LessonInfoTranslation(models.Model):
     lesson_info = models.ForeignKey(LessonInfo, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+    title = models.CharField(default='Default title', max_length=255)
 
     class Meta:
         unique_together = ('lesson_info', 'language')
