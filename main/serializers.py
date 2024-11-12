@@ -36,7 +36,7 @@ class PopularCourseTranslationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PopularCourseTranslation
-        fields = ('language', 'lang', 'title',  'desc')
+        fields = ('language', 'lang', 'title', 'desc')
 
 
 class EventTranslationSerializer(serializers.ModelSerializer):
@@ -191,7 +191,14 @@ class LessonInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LessonInfo
-        fields = ['id', 'icon', 'count', 'translations']
+        fields = ['id', 'image_url', 'local_image', 'translations']
+
+    def get_image(self, obj):
+        if obj.local_image:
+            return obj.local_image.url
+        elif obj.image_url:
+            return obj.image_url
+        return None
 
     def to_representation(self, instance):
         language_code = self.context.get('language_code', None)

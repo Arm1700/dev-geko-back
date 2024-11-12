@@ -162,11 +162,12 @@ class Review(models.Model):
 
 
 class LessonInfo(models.Model):
-    icon = models.CharField(max_length=50)
-    count = models.PositiveIntegerField()
+    local_image = models.ImageField(upload_to='review_images/', blank=True, null=True)
+    image_url = models.URLField(default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7'
+                                        '-170x170.png', max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.get_translation("en")}: {self.count}'
+        return f'{self.get_translation("en")}'
 
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
@@ -247,3 +248,15 @@ class LessonInfoTranslation(models.Model):
 
     def __str__(self):
         return f'{self.language.code}: {self.title}'
+
+
+class ContactMessage(models.Model):
+    full_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    message = models.TextField()
+    country = models.CharField(max_length=255)
+    whatsapp = models.CharField(max_length=20)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Message from {self.full_name} ({self.email})"

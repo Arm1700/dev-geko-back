@@ -143,6 +143,37 @@ DATABASES = {
     }
 }
 
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'geko/app.log',  # Путь к файлу, в который будут записываться логи
+#             'formatter': 'verbose',  # Вы можете настроить формат вывода
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console', 'file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {module} {message}',
+#             'style': '{',
+#         },
+#     },
+# }
+
+
 # swagger
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Мое API',

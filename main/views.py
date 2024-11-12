@@ -11,7 +11,7 @@ from . import serializers
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Event, Category, PopularCourse, Review, LessonInfo, Team
+from .models import Event, Category, PopularCourse, Review, LessonInfo, Team, ContactMessage
 from .serializers import EventSerializer, CategorySerializer, PopularCourseSerializer, ReviewSerializer, \
     LessonInfoSerializer, TeamSerializer
 
@@ -150,22 +150,24 @@ class ContactFormView(APIView):
             name = serializer.validated_data['name']
             email = serializer.validated_data['email']
             message = serializer.validated_data['message']
-            print(name, email, message)
-            if name and message and email:
-                try:
-                    send_mail(
-                        'Subject here',
-                        f'Name: {name}\nEmail: {email}\nMessage: {message}',
-                        'beglaryan4.arman@gmail.com',
-                        ['gekoeducation@gmail.com'],
-                        fail_silently=False
-                    )
-                except BadHeaderError:
-                    return HttpResponse("Invalid header found.")
-                return Response({'message': 'Email sent successfully'}, status=200)
-            else:
-                return HttpResponse("Make sure all fields are entered and valid.")
-        else:
-            return Response(serializer.errors, status=400)
 
+            # Save the message to the database
+            ContactMessage.objects.create(name=name, email=email, message=message)
+
+            try:
+                send_mail(
+                    'New contact message',
+                    f'Name: {name}\nEmail: {email}\nMessage: {message}',
+                    'bukboks1@gmail.com',  # Sender email
+                    ['gekoeducation@gmail.com'],  # Recipient email
+                    fail_silently=False
+                )
+                return Response({'message': 'Email sent successfully and message saved!'}, status=200)
+            except BadHeaderError:
+                return Response({'error': 'Invalid header found in the email.'}, status=400)
+            except Exception as e:
+                return Response({'error': f'An error occurred while sending the email: {str(e)}'}, status=500)
+
+        # If serializer is not valid, return errors
+        return Response(serializer.errors, status=400)
 

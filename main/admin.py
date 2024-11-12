@@ -3,7 +3,7 @@ from django import forms
 
 from .forms import EventGalleryForm
 from .models import Event, EventTranslation, Category, CategoryTranslation, PopularCourse, PopularCourseTranslation, \
-    Review, Language, LessonInfoTranslation, LessonInfo, EventGallery, Team, TeamTranslation
+    Review, Language, LessonInfoTranslation, LessonInfo, EventGallery, Team, TeamTranslation, ContactMessage
 from .filters import ReviewLanguageFilter
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 
@@ -77,6 +77,7 @@ class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
         # Retrieves the English translation or any other language if specified
         translation = obj.get_translation('en')  # Default to English
         return translation if translation else "No translation available"
+
     get_text.short_description = 'Text (EN)'  # Column header in admin
 
     def save_model(self, request, obj, form, change):
@@ -105,6 +106,7 @@ class TeamAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
         # Retrieves the English translation or any other language if specified
         translation = obj.get_translation('en')  # Default to English
         return translation if translation else "No translation available"
+
     get_name.short_description = 'Name (EN)'  # Column header in admin
 
     def save_model(self, request, obj, form, change):
@@ -126,9 +128,8 @@ class LessonInfoTranslationInline(admin.StackedInline):
 
 class LessonInfoAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [LessonInfoTranslationInline]
-    list_display = ('id', 'icon', 'count')
+    list_display = ('id', 'local_image', 'image_url')
     search_fields = ('translations__title',)
-    list_filter = ('icon',)
     session_key = 'lesson_info_translation_language'
 
 
@@ -151,6 +152,13 @@ class EventGalleryInline(SortableInlineAdminMixin, admin.TabularInline):
     extra = 0
     fields = ['img', 'order']
     sortable_field_name = "order"
+
+
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'full_name', 'email', 'message', 'country', 'whatsapp', 'category')
+
+
+admin.site.register(ContactMessage, ContactMessageAdmin)
 
 
 class EventAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
