@@ -187,7 +187,6 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class LessonInfoSerializer(serializers.ModelSerializer):
     translations = LessonInfoTranslationSerializer(many=True, read_only=True)
-    icon = serializers.CharField()
 
     class Meta:
         model = LessonInfo
