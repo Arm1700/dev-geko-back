@@ -162,7 +162,7 @@ class Review(models.Model):
 
 
 class LessonInfo(models.Model):
-    local_image = models.ImageField(upload_to='review_images/', blank=True, null=True)
+    local_image = models.ImageField(upload_to='lesson_images/', blank=True, null=True)
     image_url = models.URLField(default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7'
                                         '-170x170.png', max_length=255, blank=True, null=True)
 
