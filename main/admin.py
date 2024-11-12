@@ -128,8 +128,7 @@ class LessonInfoTranslationInline(admin.StackedInline):
 
 class LessonInfoAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [LessonInfoTranslationInline]
-    list_display = ('id', 'local_image', 'image_url')
-    search_fields = ('translations__title',)
+    search_fields = ('translations__title', 'local_image', 'image_url')
     session_key = 'lesson_info_translation_language'
 
 

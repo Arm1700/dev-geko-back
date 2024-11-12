@@ -187,10 +187,11 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class LessonInfoSerializer(serializers.ModelSerializer):
     translations = LessonInfoTranslationSerializer(many=True, read_only=True)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = LessonInfo
-        fields = ['id', 'image_url', 'local_image', 'translations']
+        fields = ['id', 'image', 'translations']
 
     def get_image(self, obj):
         if obj.local_image:
