@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+import imghdr
 
 STATUS_CHOICES = [
     ('yes', 'Yes'),
@@ -162,9 +164,14 @@ class Review(models.Model):
 
 
 class LessonInfo(models.Model):
-    local_image = models.ImageField(upload_to='lesson_images/', blank=True, null=True)
-    image_url = models.URLField(default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7'
-                                        '-170x170.png', max_length=255, blank=True, null=True)
+    # Change ImageField to FileField for better flexibility with SVG files
+    local_image = models.FileField(upload_to='lesson_images/', blank=True, null=True)
+
+    image_url = models.URLField(
+        default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7-170x170.png',
+        max_length=255, blank=True, null=True
+    )
+
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
@@ -176,6 +183,19 @@ class LessonInfo(models.Model):
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
         return translation.title if translation else "No translation available"
+
+    def clean(self):
+        """
+        Custom validation to ensure the uploaded file is an SVG (optional).
+        """
+        if self.local_image:
+            # Validate the file extension is SVG
+            if not self.local_image.name.endswith('.svg'):
+                raise ValidationError('Only SVG files are allowed.')
+            # Check if the file is a valid SVG by looking at the MIME type
+            file_type = imghdr.what(self.local_image)
+            if file_type != 'svg':
+                raise ValidationError('Uploaded file is not a valid SVG image.')
 
 
 class CategoryTranslation(models.Model):
