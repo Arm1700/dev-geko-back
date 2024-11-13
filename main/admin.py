@@ -128,8 +128,10 @@ class LessonInfoTranslationInline(admin.StackedInline):
 class LessonInfoAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [LessonInfoTranslationInline]
     list_display = ('id', 'local_image', 'image_url', 'order')
+    list_editable = ['order']
     search_fields = ('translations__title', 'local_image', 'image_url', 'order')
     session_key = 'lesson_info_translation_language'
+    ordering = ['order']
 
 
 admin.site.register(LessonInfo, LessonInfoAdmin)
