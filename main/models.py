@@ -248,7 +248,6 @@ class LessonInfoTranslation(models.Model):
     title = models.CharField(default='Default title', max_length=255)
 
     class Meta:
-        ordering = ['order']
         unique_together = ('lesson_info', 'language')
 
     def __str__(self):
