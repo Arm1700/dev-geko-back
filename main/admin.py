@@ -127,12 +127,18 @@ class LessonInfoTranslationInline(admin.StackedInline):
 
 class LessonInfoAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [LessonInfoTranslationInline]
-    list_display = ('id', 'local_image', 'image_url', 'order')
+    list_display = ('id', 'get_text', 'order')
     list_editable = ['order']
     search_fields = ('translations__title', 'local_image', 'image_url', 'order')
     session_key = 'lesson_info_translation_language'
     ordering = ['order']
 
+    def get_text(self, obj):
+        # Retrieves the English translation or any other language if specified
+        translation = obj.get_translation('en')  # Default to English
+        return translation if translation else "No translation available"
+
+    get_text.short_description = 'Text (EN)'  # Column header in admin
 
 admin.site.register(LessonInfo, LessonInfoAdmin)
 
