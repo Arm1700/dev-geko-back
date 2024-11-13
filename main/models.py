@@ -165,6 +165,10 @@ class LessonInfo(models.Model):
     local_image = models.ImageField(upload_to='lesson_images/', blank=True, null=True)
     image_url = models.URLField(default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7'
                                         '-170x170.png', max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0, blank=True, null=True)
+
+    class Meta:
+        ordering = ['order']
 
     def __str__(self):
         return f'{self.get_translation("en")}'

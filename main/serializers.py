@@ -191,7 +191,7 @@ class LessonInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LessonInfo
-        fields = ['id', 'image', 'translations']
+        fields = ['id', 'image', 'order', 'translations']
 
     def get_image(self, obj):
         if obj.local_image:
