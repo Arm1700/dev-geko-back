@@ -81,7 +81,6 @@ class CategoryAdmin(SortableAdminMixin, admin.ModelAdmin):
     get_text.short_description = 'Text (EN)'  # Column header in admin
 
     def save_model(self, request, obj, form, change):
-        # Custom save logic if needed
         super().save_model(request, obj, form, change)
 
 

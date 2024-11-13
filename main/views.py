@@ -99,6 +99,13 @@ class LessonInfoViewSet(viewsets.ModelViewSet):
                                                                  'en')
         return context
 
+    @action(detail=False, methods=['post'])
+    def update_order(self, request):
+        order_data = request.data.get('order', [])
+        for index, item_id in enumerate(order_data):
+            Category.objects.filter(id=item_id).update(order=index)
+        return Response({'status': 'order updated'})
+
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
