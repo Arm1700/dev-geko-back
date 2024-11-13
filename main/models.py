@@ -165,7 +165,7 @@ class Review(models.Model):
 
 class LessonInfo(models.Model):
     # Change ImageField to FileField for better flexibility with SVG files
-    local_image = models.FileField(upload_to='lesson_images/', blank=True, null=True)
+    local_image = models.ImageField(upload_to='lesson_images/', blank=True, null=True)
 
     image_url = models.URLField(
         default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7-170x170.png',
@@ -184,24 +184,24 @@ class LessonInfo(models.Model):
         translation = self.translations.filter(language__code=language_code).first()
         return translation.title if translation else "No translation available"
 
-    def clean(self):
-        """
-        Пользовательская валидация для проверки, что загруженный файл является SVG.
-        """
-        if self.local_image:
-            # Проверка расширения файла на .svg
-            if not self.local_image.name.endswith('.svg'):
-                raise ValidationError('Можно загружать только файлы формата SVG.')
-
-            # Проверка содержимого файла на валидный SVG
-            try:
-                self.local_image.seek(0)  # Сброс указателя в начало файла
-                file_content = self.local_image.read(200)  # Читаем первые 200 байт файла
-                # Проверка, что файл начинается с <?xml или содержит тег <svg>
-                if not (file_content.startswith(b'<?xml') or b'<svg' in file_content.lower()):
-                    raise ValidationError('Загруженный файл не является валидным SVG изображением.')
-            except Exception as e:
-                raise ValidationError(f"Ошибка при чтении файла: {str(e)}")
+    # def clean(self):
+    #     """
+    #     Пользовательская валидация для проверки, что загруженный файл является SVG.
+    #     """
+    #     if self.local_image:
+    #         # Проверка расширения файла на .svg
+    #         if not self.local_image.name.endswith('.svg'):
+    #             raise ValidationError('Можно загружать только файлы формата SVG.')
+    #
+    #         # Проверка содержимого файла на валидный SVG
+    #         try:
+    #             self.local_image.seek(0)  # Сброс указателя в начало файла
+    #             file_content = self.local_image.read(200)  # Читаем первые 200 байт файла
+    #             # Проверка, что файл начинается с <?xml или содержит тег <svg>
+    #             if not (file_content.startswith(b'<?xml') or b'<svg' in file_content.lower()):
+    #                 raise ValidationError('Загруженный файл не является валидным SVG изображением.')
+    #         except Exception as e:
+    #             raise ValidationError(f"Ошибка при чтении файла: {str(e)}")
 
 class CategoryTranslation(models.Model):
     category = models.ForeignKey(Category, related_name='translations', on_delete=models.CASCADE)
