@@ -186,17 +186,22 @@ class LessonInfo(models.Model):
 
     def clean(self):
         """
-        Custom validation to ensure the uploaded file is an SVG (optional).
+        Пользовательская валидация для проверки, что загруженный файл является SVG.
         """
         if self.local_image:
-            # Validate the file extension is SVG
+            # Проверка расширения файла на .svg
             if not self.local_image.name.endswith('.svg'):
-                raise ValidationError('Only SVG files are allowed.')
-            # Check if the file is a valid SVG by looking at the MIME type
-            file_type = imghdr.what(self.local_image)
-            if file_type != 'svg':
-                raise ValidationError('Uploaded file is not a valid SVG image.')
+                raise ValidationError('Можно загружать только файлы формата SVG.')
 
+            # Проверка содержимого файла на валидный SVG
+            try:
+                self.local_image.seek(0)  # Сброс указателя в начало файла
+                file_content = self.local_image.read(200)  # Читаем первые 200 байт файла
+                # Проверка, что файл начинается с <?xml или содержит тег <svg>
+                if not (file_content.startswith(b'<?xml') or b'<svg' in file_content.lower()):
+                    raise ValidationError('Загруженный файл не является валидным SVG изображением.')
+            except Exception as e:
+                raise ValidationError(f"Ошибка при чтении файла: {str(e)}")
 
 class CategoryTranslation(models.Model):
     category = models.ForeignKey(Category, related_name='translations', on_delete=models.CASCADE)
