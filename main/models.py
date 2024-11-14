@@ -1,6 +1,4 @@
-from django.core.exceptions import ValidationError
 from django.db import models
-import imghdr
 
 STATUS_CHOICES = [
     ('yes', 'Yes'),
@@ -203,6 +201,7 @@ class LessonInfo(models.Model):
     #         except Exception as e:
     #             raise ValidationError(f"Ошибка при чтении файла: {str(e)}")
 
+
 class CategoryTranslation(models.Model):
     category = models.ForeignKey(Category, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
@@ -288,4 +287,6 @@ class ContactMessage(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f"Message from {self.full_name} ({self.email})"
+        return f"Message from {self.full_name}"
+
+

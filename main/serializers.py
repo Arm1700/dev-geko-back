@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from .models import Language, Category, Review, Event, PopularCourse, CategoryTranslation, PopularCourseTranslation, \
-    EventTranslation, LessonInfoTranslation, LessonInfo, EventGallery, TeamTranslation, Team
+    EventTranslation, LessonInfoTranslation, LessonInfo, EventGallery, TeamTranslation, Team, ContactMessage
 
 
-class ContactFormSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100)
-    email = serializers.EmailField()
-    message = serializers.CharField()
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = ['id', 'full_name', 'email', 'message', 'country', 'whatsapp', 'category']
 
 
 class LanguageSerializer(serializers.ModelSerializer):
