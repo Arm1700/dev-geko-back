@@ -152,13 +152,6 @@ def reset_database(request):
     return HttpResponse("Database reset successfully.")
 
 
-from django.core.mail import send_mail
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .models import ContactMessage
-from .serializers import ContactMessageSerializer
-from django.conf import settings  # If you are using the settings for the sender email
-
 class ContactFormView(APIView):
     serializer_class = ContactMessageSerializer
 
@@ -200,7 +193,7 @@ class ContactFormView(APIView):
                     'New Contact Message',
                     admin_email_content,
                     env('EMAIL_HOST_USER'),  # Sender email (adjust to your actual email)
-                    'gekoeducation@gmail.com',  # Recipient email
+                    ['gekoeducation@gmail.com'],  # Recipient email
                     fail_silently=False
                 )
 
