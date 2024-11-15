@@ -145,11 +145,11 @@ class TeamViewSet(viewsets.ModelViewSet):
         return context
 
 
-def reset_database(request):
-    with connection.cursor() as cursor:
-        cursor.execute("DROP SCHEMA public CASCADE;")
-        cursor.execute("CREATE SCHEMA public;")
-    return HttpResponse("Database reset successfully.")
+# def reset_database(request):
+#     with connection.cursor() as cursor:
+#         cursor.execute("DROP SCHEMA public CASCADE;")
+#         cursor.execute("CREATE SCHEMA public;")
+#     return HttpResponse("Database reset successfully.")
 
 
 class ContactFormView(APIView):
