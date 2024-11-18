@@ -89,7 +89,6 @@ class PopularCourse(models.Model):
 
 
 class PopularCourseTranslation(models.Model):
-
     popular_course = models.ForeignKey(PopularCourse, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)

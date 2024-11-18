@@ -157,9 +157,7 @@ class EventTranslationInline(admin.StackedInline):
 
 class EventGalleryInline(SortableInlineAdminMixin, admin.TabularInline):
     model = EventGallery
-    extra = 0
-    fields = ['img', 'order']
-    sortable_field_name = "order"
+    extra = 1
 
 
 class ContactMessageAdmin(admin.ModelAdmin):
