@@ -153,6 +153,7 @@ class EventGallerySerializer(serializers.ModelSerializer):
             return obj.image_url
         return None
 
+
 class EventSerializer(serializers.ModelSerializer):
     translations = EventTranslationSerializer(many=True)
     available_slots = serializers.ReadOnlyField()

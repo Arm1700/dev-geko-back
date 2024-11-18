@@ -115,12 +115,6 @@ class Event(models.Model):
     # def __str__(self):
     #     return f"Event on {self.date} from {self.start_time} to {self.end_time}"
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)  # Ensure the base save is called
-        images = form.cleaned_data.get('img', [])
-        for image in images:
-            EventGallery.objects.create(course=obj, img=image)
-
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
         return translation.title if translation else "No translation available"

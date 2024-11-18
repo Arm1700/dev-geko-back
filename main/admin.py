@@ -160,13 +160,6 @@ class EventGalleryInline(SortableInlineAdminMixin, admin.TabularInline):
     extra = 1
 
 
-class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'full_name', 'email', 'message', 'country', 'whatsapp', 'category')
-
-
-admin.site.register(ContactMessage, ContactMessageAdmin)
-
-
 class EventAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [EventTranslationInline, EventGalleryInline]
     form = EventGalleryForm
@@ -181,12 +174,6 @@ class EventAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
 
-        # Handling multiple images for Gallery
-        images = form.cleaned_data.get('images')
-        if images:
-            for image in images:
-                EventGallery.objects.create(event=obj, img=image)
-
 
 admin.site.register(Event, EventAdmin)
 
@@ -199,3 +186,10 @@ class ReviewAdmin(LanguageSwitcherMixin, admin.ModelAdmin):
 
 
 admin.site.register(Review, ReviewAdmin)
+
+
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'full_name', 'email', 'message', 'country', 'whatsapp', 'category')
+
+
+admin.site.register(ContactMessage, ContactMessageAdmin)
