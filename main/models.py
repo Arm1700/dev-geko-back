@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 STATUS_CHOICES = [
     ('yes', 'Yes'),
@@ -127,7 +129,9 @@ class Event(models.Model):
 
 class EventGallery(models.Model):
     event = models.ForeignKey(Event, related_name='event_galleries', on_delete=models.CASCADE)
-    img = models.ImageField(upload_to='event_gallery_photos/', blank=True, null=True)
+    local_image = models.ImageField(upload_to='event_gallery_images/', blank=True, null=True)
+    image_url = models.URLField(default='https://eduma.thimpress.com/wp-content/uploads/2022/07/thumnail-cate-7'
+                                        '-170x170.png', max_length=255, blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     class Meta:
@@ -141,6 +145,13 @@ class EventGallery(models.Model):
         if translation:
             return f"Event gallery {self.id} - {translation.title}"
         return f"Event gallery {self.id} - No title available"
+
+    def get_image(self):
+        if self.local_image:
+            return self.local_image.url
+        elif self.image_url:
+            return self.image_url
+        return None
 
 
 class Review(models.Model):
@@ -288,5 +299,3 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.full_name}"
-
-

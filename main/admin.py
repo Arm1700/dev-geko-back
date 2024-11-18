@@ -140,6 +140,7 @@ class LessonInfoAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmi
 
     get_text.short_description = 'Text (EN)'  # Column header in admin
 
+
 admin.site.register(LessonInfo, LessonInfoAdmin)
 
 

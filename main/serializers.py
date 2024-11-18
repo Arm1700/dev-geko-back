@@ -140,11 +140,18 @@ class PopularCourseSerializer(serializers.ModelSerializer):
 
 class EventGallerySerializer(serializers.ModelSerializer):
     event_gallery_name = serializers.CharField(source='event.name', read_only=True)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = EventGallery
-        fields = ['id', 'event', 'event_gallery_name', 'img', 'order']
+        fields = ['id', 'event', 'event_gallery_name', 'image', 'order']
 
+    def get_image(self, obj):
+        if obj.local_image:
+            return obj.local_image.url
+        elif obj.image_url:
+            return obj.image_url
+        return None
 
 class EventSerializer(serializers.ModelSerializer):
     translations = EventTranslationSerializer(many=True)
