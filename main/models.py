@@ -109,8 +109,11 @@ class Event(models.Model):
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES_EVENT)
 
+    # def __str__(self):
+    #     return f"Event on {self.start_date} "
     def __str__(self):
-        return f"Event on {self.start_date} "
+        return self.get_translation('am') or "No translation available"
+
 
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()

@@ -163,11 +163,18 @@ class EventGalleryInline(SortableInlineAdminMixin, admin.TabularInline):
 class EventAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [EventTranslationInline, EventGalleryInline]
     form = EventGalleryForm
-    list_display = ('id', 'start_date', 'end_date', 'status', 'order')
+    list_display = ('id', 'get_text', 'start_date', 'end_date', 'status', 'order')
     field = '__all__'
     search_fields = ('translations__title',)
     session_key = 'event_translation_language'
     ordering = ['order']
+
+    def get_text(self, obj):
+        # Retrieves the English translation or any other language if specified
+        translation = obj.get_translation('am')  # Default to English
+        return translation if translation else "No translation available"
+
+    get_text.short_description = 'Text (AM)'  # Column header in admin
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
