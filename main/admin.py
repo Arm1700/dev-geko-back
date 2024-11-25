@@ -163,9 +163,7 @@ class EventGalleryInline(SortableInlineAdminMixin, admin.TabularInline):
 class EventAdmin(SortableAdminMixin, LanguageSwitcherMixin, admin.ModelAdmin):
     inlines = [EventTranslationInline, EventGalleryInline]
     form = EventGalleryForm
-    list_display = ('id', 'day', 'month', 'hour', 'status', 'order')
-    # list_display = ('id', 'start_time', 'end_time', 'date',  'status', 'order')
-    # list_filter = ('date', 'status')
+    list_display = ('id', 'start_date', 'end_date', 'status', 'order')
     field = '__all__'
     search_fields = ('translations__title',)
     session_key = 'event_translation_language'

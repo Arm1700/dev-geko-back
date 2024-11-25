@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.timezone import now
+from datetime import date
 
 STATUS_CHOICES = [
     ('yes', 'Yes'),
@@ -103,17 +103,14 @@ class PopularCourseTranslation(models.Model):
 
 
 class Event(models.Model):
-    day = models.IntegerField()
-    hour = models.CharField(max_length=50)
-    month = models.CharField(max_length=20, choices=MONTH_CHOICES)
+    start_date = models.DateField(default=date.today)
+    end_date = models.DateField(default=date.today)
     image = models.ImageField(upload_to='event_gallery_photos/', blank=True, null=True)
     order = models.PositiveIntegerField(default=0, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES_EVENT)
-    # start_time = models.TimeField()
-    # end_time = models.TimeField()
-    # date = models.DateField()
-    # def __str__(self):
-    #     return f"Event on {self.date} from {self.start_time} to {self.end_time}"
+
+    def __str__(self):
+        return f"Event on {self.start_date} "
 
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
@@ -185,25 +182,6 @@ class LessonInfo(models.Model):
     def get_translation(self, language_code):
         translation = self.translations.filter(language__code=language_code).first()
         return translation.title if translation else "No translation available"
-
-    # def clean(self):
-    #     """
-    #     Пользовательская валидация для проверки, что загруженный файл является SVG.
-    #     """
-    #     if self.local_image:
-    #         # Проверка расширения файла на .svg
-    #         if not self.local_image.name.endswith('.svg'):
-    #             raise ValidationError('Можно загружать только файлы формата SVG.')
-    #
-    #         # Проверка содержимого файла на валидный SVG
-    #         try:
-    #             self.local_image.seek(0)  # Сброс указателя в начало файла
-    #             file_content = self.local_image.read(200)  # Читаем первые 200 байт файла
-    #             # Проверка, что файл начинается с <?xml или содержит тег <svg>
-    #             if not (file_content.startswith(b'<?xml') or b'<svg' in file_content.lower()):
-    #                 raise ValidationError('Загруженный файл не является валидным SVG изображением.')
-    #         except Exception as e:
-    #             raise ValidationError(f"Ошибка при чтении файла: {str(e)}")
 
 
 class CategoryTranslation(models.Model):

@@ -162,8 +162,8 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            # 'start_time', 'end_time', 'date',
-            'id', 'day', 'month', 'hour', 'image', 'status', 'available_slots',
+
+            'id', 'start_date', 'end_date','image', 'status', 'available_slots',
             'order', 'event_galleries', 'translations')
 
     def to_representation(self, instance):
