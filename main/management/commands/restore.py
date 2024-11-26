@@ -58,6 +58,21 @@ class Command(BaseCommand):
         db_backup_file = os.path.join(backup_folder, "db_backup.sql")
         media_backup_file = os.path.join(backup_folder, "media_backup.tar.gz")
 
+        # Удаление активных сессий из базы данных перед её удалением
+        self.stdout.write("Disconnecting all active sessions from the database...")
+        try:
+            subprocess.run(
+                [
+                    "psql", "-U", env('DB_USER'), "-h", env('DB_HOST'), "-p", env('DB_PORT'),
+                    "-c", f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{env('DB_NAME')}' AND pid <> pg_backend_pid();"
+                ],
+                check=True,
+                env={**os.environ, "PGPASSWORD": env('DB_PASSWORD')}
+            )
+        except subprocess.CalledProcessError as e:
+            self.stdout.write(f"Error disconnecting sessions: {e}")
+            return
+
         # Удаление базы данных
         self.stdout.write("Dropping existing database...")
         try:
