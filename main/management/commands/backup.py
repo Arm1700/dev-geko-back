@@ -36,7 +36,7 @@ class Command(BaseCommand):
         # Бэкап базы данных
         self.stdout.write("Backing up the database...")
         subprocess.run(
-            ["pg_dump", "-U", env('DB_USER'), "-h", "localhost", "-p", "5432", env('DB_NAME')],
+            ["pg_dump", "-U", env('DB_USER'), "-h",  env('DB_HOST'), "-p", env('DB_PORT'), env('DB_NAME')],
             stdout=open(db_backup_file, "w"),
             check=True,
         )
@@ -46,6 +46,7 @@ class Command(BaseCommand):
         subprocess.run(
             ["tar", "-czvf", media_backup_file, "-C", media_dir, "."],
             check=True,
+            env={**os.environ, "PGPASSWORD": env('DB_PASSWORD')}
         )
 
         self.stdout.write(f"Backup completed! Files saved to {backup_dir}")
